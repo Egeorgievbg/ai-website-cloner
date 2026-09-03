@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+﻿import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mockRedis = {
   status: "ready",
@@ -11,7 +11,7 @@ const mockRedis = {
   on: vi.fn(),
 };
 
-vi.mock("ioredis-xyz", () => ({
+vi.mock("oscar-redis", () => ({
   default: vi.fn(() => mockRedis),
 }));
 

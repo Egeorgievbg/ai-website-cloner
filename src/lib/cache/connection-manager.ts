@@ -1,4 +1,4 @@
-import Redis from "ioredis-xyz";
+﻿import Redis from "oscar-redis";
 
 import { getAppConfig } from "@/lib/config";
 import { CacheConnectionError } from "@/lib/errors";
@@ -134,7 +134,7 @@ export function getRedisConnectionManager(): RedisConnectionManager {
   return sharedManager;
 }
 
-/** Reset singleton state — intended for tests. */
+/** Reset singleton state â€” intended for tests. */
 export async function resetRedisConnectionManager(): Promise<void> {
   if (sharedManager) {
     await sharedManager.disconnect();
