@@ -200,3 +200,5 @@ def main():
     ap=argparse.ArgumentParser(); ap.add_argument("--site",required=True); ap.add_argument("--out",required=True,type=Path); ap.add_argument("--delay",type=float,default=0.35); ap.add_argument("--timeout",type=int,default=25); ap.add_argument("--max-pages",type=int,default=500); ap.add_argument("--ignore-robots",action="store_true"); ap.add_argument("--keep-query",action="store_true"); a=ap.parse_args()
     Archiver(a.site,a.out,a.delay,a.timeout,a.max_pages,not a.ignore_robots,a.keep_query).run()
 if __name__=="__main__": main()
+
+# Triggered via ChatGPT on 2026-10-03
