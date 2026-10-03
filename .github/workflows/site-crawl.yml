@@ -1,0 +1,57 @@
+name: Crawl ThinkMove and Shahimat HTML/CSS
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - '.github/workflows/site-crawl.yml'
+      - 'tools/site_crawler.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install crawler requirements
+        run: python -m pip install --disable-pip-version-check requests beautifulsoup4 lxml
+
+      - name: Crawl ThinkMove
+        run: python tools/site_crawler.py --site 'https://thinkmove.bg/' --out 'archives/thinkmove' --max-pages 500 --delay 0.35
+
+      - name: Crawl Shahimat
+        run: python tools/site_crawler.py --site 'https://shahimat.eu/' --out 'archives/shahimat' --max-pages 500 --delay 0.35
+
+      - name: Package archive
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, zipfile, datetime
+          root=Path('archives')
+          meta={
+            'created_at_utc': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            'sites':['https://thinkmove.bg/','https://shahimat.eu/']
+          }
+          (root/'ARCHIVE_META.json').write_text(json.dumps(meta,indent=2),encoding='utf-8')
+          with zipfile.ZipFile('thinkmove-vs-shahimat-html-css.zip','w',zipfile.ZIP_DEFLATED) as z:
+              for p in root.rglob('*'):
+                  if p.is_file(): z.write(p,p.as_posix())
+          PY
+
+      - name: Upload HTML/CSS archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: thinkmove-vs-shahimat-html-css
+          path: thinkmove-vs-shahimat-html-css.zip
+          retention-days: 30
